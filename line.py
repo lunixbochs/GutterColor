@@ -4,6 +4,8 @@ from sublime import HIDDEN, PERSISTENT, load_settings, cache_path
 import subprocess
 import re
 
+from .circle import write_circle
+
 class Line:
 
   HEX_REGEXP = '#((?:[0-9a-fA-F]{3}){1,2})'
@@ -76,15 +78,6 @@ class Line:
     self.view.erase_regions("gutter_color_%s" % self.region.a)
 
   def create_icon(self):
-    """Create the color icon using ImageMagick convert"""
-    script = "%s -units PixelsPerCentimeter -type TrueColorMatte -channel RGBA " \
-      "-size 32x32 -alpha transparent xc:none " \
-      "-fill \"#%s\" -draw \"circle 15,16 8,10\" png32:\"%s\"" % \
-      (self.settings.get("convert_path"), self.color(), self.icon_path())
+    """Create the color icon"""
     if not isfile(self.icon_path()):
-        pr = subprocess.Popen(script,
-          shell = True,
-          stdout = subprocess.PIPE,
-          stderr = subprocess.PIPE,
-          stdin = subprocess.PIPE)
-        (result, error) = pr.communicate()
+        write_circle(self.icon_path(), self.color())
