@@ -55,4 +55,4 @@ def settings():
 
 def syntax(view):
   """Return the view syntax"""
-  return view.settings().get('syntax').split('/')[-1].split('.')[0].lower()
+  return (view.settings().get('syntax') or '').split('/')[-1].split('.')[0].lower()
